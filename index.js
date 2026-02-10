@@ -1,19 +1,22 @@
 const express = require("express");
 const mineflayer = require("mineflayer");
 
-// 1. WEB SERVER: Keeps CodeSandbox alive via UptimeRobot
+// 1. WEB SERVER: Crucial for Render deployment
 const app = express();
-const port = 3000;
+
+// Render sets the PORT automatically; we fall back to 10000
+const port = process.env.PORT || 10000;
 
 app.get("/", (req, res) => {
-  res.send("Bot is online and keeping the sandbox alive!");
+  res.send("Sohbot is alive and running on Render!");
 });
 
-app.listen(port, () => {
-  console.log(`Web server active on port ${port}`);
+// We MUST bind to "0.0.0.0" so Render's health check can find the bot
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Web server listening on port ${port}`);
 });
 
-// 2. BOT LOGIC: The Minecraft connection
+// 2. BOT LOGIC
 function startBot() {
   const bot = mineflayer.createBot({
     host: "scup.aternos.host",
@@ -25,16 +28,13 @@ function startBot() {
 
   bot.on("spawn", () => {
     console.log("Bot joined the Aternos server successfully!");
-
+    
     // ANTI-AFK: Swings arm, jumps, and rotates every 30 seconds
     setInterval(() => {
       if (bot.entity) {
-        // Swing arm
-        bot.swingArm("right");
-
-        // Jump
-        bot.setControlState("jump", true);
-        setTimeout(() => bot.setControlState("jump", false), 500);
+        bot.swingArm('right'); 
+        bot.setControlState('jump', true);
+        setTimeout(() => bot.setControlState('jump', false), 500);
 
         // Look around randomly
         const yaw = Math.random() * Math.PI * 2;
@@ -44,17 +44,17 @@ function startBot() {
     }, 30000);
   });
 
-  // Automatically respond to chat (Bonus)
+  // Automatically respond to chat
   bot.on("chat", (username, message) => {
     if (username === bot.username) return;
     if (message === "!status") {
-      bot.chat("I am sohbot, the 24/7 guardian of this server!");
+      bot.chat("I am sohbot, running 24/7 on Render!");
     }
   });
 
-  // AUTO-RECONNECT: If the server restarts, the bot waits 10s and tries again
+  // AUTO-RECONNECT: Retries every 10 seconds if disconnected
   bot.on("end", () => {
-    console.log("Disconnected from server. Retrying in 10 seconds...");
+    console.log("Disconnected. Reconnecting in 10 seconds...");
     setTimeout(startBot, 10000);
   });
 
@@ -63,9 +63,9 @@ function startBot() {
   });
 
   bot.on("kicked", (reason) => {
-    console.log("Kicked from server for:", reason);
+    console.log("Kicked for:", reason);
   });
 }
 
-// Start the bot for the first time
+// Start the bot
 startBot();
