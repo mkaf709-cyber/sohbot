@@ -21,8 +21,8 @@ function startBot() {
   const bot = mineflayer.createBot({
     host: "scup.aternos.host",
     port: 37497,
-    username: "sohbot",
-    version: "1.21.1",
+    username: "almomaeez",
+    version: "1.21.11",
     auth: "offline",
   });
 
