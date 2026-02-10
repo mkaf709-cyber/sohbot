@@ -19,7 +19,7 @@ app.listen(port, "0.0.0.0", () => {
 // 2. BOT LOGIC
 function startBot() {
   const bot = mineflayer.createBot({
-    host: "mudskipper.aternos.host",
+    host: "pearleye.aternos.host",
     port: 37497,
     username: "almomaeez",
     version: "1.21.11",
