@@ -22,7 +22,7 @@ function startBot() {
     host: "snakehead.aternos.host",
     port: 37497,
     username: "almomaeez",
-    version: "1.21.11",
+    version: "1.21.9",
     auth: "offline",
   });
 
